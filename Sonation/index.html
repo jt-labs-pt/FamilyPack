@@ -1,0 +1,42 @@
+                    <span>${label}</span>
+                    <strong>${value}</strong>
+                </div>
+                <button class="copy-btn no-print" onclick="event.stopPropagation(); copyToClipboard('${value}')" title="Copiar">📋</button>
+            </div>
+        `;
+    }
+
+    function editChild(id) {
+        const c = childrenList.find(x => x.id === id);
+        document.getElementById('edit-id').value = c.id;
+        document.getElementById('nome').value = c.nome;
+        document.getElementById('data_nasc').value = c.data_nasc;
+        document.getElementById('nif').value = c.nif;
+        document.getElementById('niss').value = c.niss;
+        document.getElementById('cc').value = c.cc;
+        document.getElementById('seguro').value = c.seguro;
+        document.getElementById('calcado').value = c.calcado;
+        document.getElementById('roupa').value = c.roupa;
+        document.getElementById('iban').value = c.iban;
+        document.getElementById('notas').value = c.notas;
+        currentPerfilPic = c.foto;
+        const pImg = document.getElementById('perfil-preview-img');
+        if(c.foto) { pImg.src = c.foto; pImg.style.display = 'block'; }
+        currentDocs = c.docs || [];
+        renderDocPreviews();
+        document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function deleteChild(id) { if(confirm("Apagar?")) { childrenList = childrenList.filter(c => c.id !== id); localStorage.setItem('sonation_kids', JSON.stringify(childrenList)); renderList(); } }
+    function clearForm() { ['nome','data_nasc','nif','niss','cc','seguro','calcado','roupa','iban','notas'].forEach(id => document.getElementById(id).value = ''); }
+
+    function exportPDF() {
+        document.querySelectorAll('.child-item').forEach(i => i.classList.add('active'));
+        const opt = { margin: 0.3, filename: 'Sonation_Backup.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4' } };
+        html2pdf().set(opt).from(document.getElementById('pdf-container')).save().then(() => {
+            document.querySelectorAll('.child-item').forEach(i => i.classList.remove('active'));
+        });
+    }
+</script>
+</body>
+</html>
